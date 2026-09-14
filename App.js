@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native';
 
+
 export default function App() {
+  console.log('Android debugging test is working');
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
@@ -8,7 +10,7 @@ export default function App() {
       </Text>
 
       <Text style={styles.introduction}>
-        Hello people, my name is Samuel and I am a software developer.
+        Hello people,AA my name is Samuel and I am a software developer.
       </Text>
 
       <Text style={styles.description}>
