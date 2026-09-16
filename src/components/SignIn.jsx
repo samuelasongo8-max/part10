@@ -15,20 +15,7 @@ const validationSchema = yup.object().shape({
   password: yup.string().required('Password is required'),
 });
 
-const SignIn = () => {
-  const [signIn] = useSignIn();
-  const navigate = useNavigate();
-
-  const onSubmit = async ({ username, password }) => {
-    try {
-      const response = await signIn({ username, password });
-      console.log(response);
-      navigate('/');
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
+export const SignInForm = ({ onSubmit }) => {
   const formik = useFormik({
     initialValues,
     validationSchema,
@@ -76,6 +63,23 @@ const SignIn = () => {
       </Pressable>
     </View>
   );
+};
+
+const SignIn = () => {
+  const [signIn] = useSignIn();
+  const navigate = useNavigate();
+
+  const onSubmit = async ({ username, password }) => {
+    try {
+      const response = await signIn({ username, password });
+      console.log(response);
+      navigate('/');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return <SignInForm onSubmit={onSubmit} />;
 };
 
 const styles = StyleSheet.create({
