@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 import * as yup from 'yup';
 import Text from './Text';
 import useSignIn from '../hooks/useSignIn';
+import { useNavigate } from 'react-router-native';
 
 const initialValues = {
   username: '',
@@ -16,11 +17,13 @@ const validationSchema = yup.object().shape({
 
 const SignIn = () => {
   const [signIn] = useSignIn();
+  const navigate = useNavigate();
 
   const onSubmit = async ({ username, password }) => {
     try {
       const response = await signIn({ username, password });
       console.log(response);
+      navigate('/');
     } catch (error) {
       console.log(error);
     }
