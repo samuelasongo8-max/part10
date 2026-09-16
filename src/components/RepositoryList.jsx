@@ -48,17 +48,25 @@ const repositories = [
   },
 ];
 
-const RepositoryList = () => {
-  const renderItem = ({ item }) => <RepositoryItem repository={item} />;
+export const RepositoryListContainer = ({ repositories }) => {
+  const renderItem = ({ item }) => <RepositoryItem repository={item.node} />;
 
   return (
     <FlatList
-      data={repositories}
+      data={repositories.edges}
       renderItem={renderItem}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item) => item.node.id}
       ItemSeparatorComponent={() => <View style={styles.separator} />}
     />
   );
+};
+
+const RepositoryList = () => {
+  const repositoryData = {
+    edges: repositories.map((repository) => ({ node: repository })),
+  };
+
+  return <RepositoryListContainer repositories={repositoryData} />;
 };
 
 const styles = StyleSheet.create({
