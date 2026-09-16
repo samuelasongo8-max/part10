@@ -2,15 +2,26 @@ import { StyleSheet, View } from 'react-native';
 import AppBar from './AppBar';
 import RepositoryList from './RepositoryList';
 import SignIn from './SignIn';
-import { Navigate, Route, Routes } from 'react-router-native';
+import Repository from './Repository';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-native';
 
 const Main = () => {
+  const navigate = useNavigate();
+
   return (
     <View style={styles.container}>
       <AppBar />
       <Routes>
-        <Route path="/" element={<RepositoryList />} />
+        <Route
+          path="/"
+          element={
+            <RepositoryList
+              onRepositoryPress={(id) => navigate(`/repositories/${id}`)}
+            />
+          }
+        />
         <Route path="/signin" element={<SignIn />} />
+        <Route path="/repositories/:id" element={<Repository />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </View>

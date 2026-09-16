@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 import RepositoryItem from './RepositoryItem';
 
 const repositories = [
@@ -48,8 +48,12 @@ const repositories = [
   },
 ];
 
-export const RepositoryListContainer = ({ repositories }) => {
-  const renderItem = ({ item }) => <RepositoryItem repository={item.node} />;
+export const RepositoryListContainer = ({ repositories, onRepositoryPress }) => {
+  const renderItem = ({ item }) => (
+    <Pressable onPress={() => onRepositoryPress?.(item.node.id)}>
+      <RepositoryItem repository={item.node} />
+    </Pressable>
+  );
 
   return (
     <FlatList
@@ -61,12 +65,17 @@ export const RepositoryListContainer = ({ repositories }) => {
   );
 };
 
-const RepositoryList = () => {
+const RepositoryList = ({ onRepositoryPress }) => {
   const repositoryData = {
     edges: repositories.map((repository) => ({ node: repository })),
   };
 
-  return <RepositoryListContainer repositories={repositoryData} />;
+  return (
+    <RepositoryListContainer
+      repositories={repositoryData}
+      onRepositoryPress={onRepositoryPress}
+    />
+  );
 };
 
 const styles = StyleSheet.create({

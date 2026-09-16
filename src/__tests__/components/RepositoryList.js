@@ -1,5 +1,5 @@
 /* global describe, it, expect */
-import { render, screen, within } from '@testing-library/react-native';
+import { render, within } from '@testing-library/react-native';
 import { RepositoryListContainer } from '../../components/RepositoryList';
 
 const repositories = {
@@ -48,10 +48,12 @@ const repositories = {
 
 describe('RepositoryList', () => {
   describe('RepositoryListContainer', () => {
-    it('renders repository information correctly', () => {
-      render(<RepositoryListContainer repositories={repositories} />);
+    it('renders repository information correctly', async () => {
+      const { getAllByTestId } = await render(
+        <RepositoryListContainer repositories={repositories} />,
+      );
 
-      const repositoryItems = screen.getAllByTestId('repositoryItem');
+      const repositoryItems = getAllByTestId('repositoryItem');
       expect(repositoryItems).toHaveLength(2);
 
       const firstRepositoryItem = within(repositoryItems[0]);

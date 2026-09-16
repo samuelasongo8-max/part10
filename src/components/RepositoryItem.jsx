@@ -1,4 +1,5 @@
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
+import * as Linking from 'expo-linking';
 import Text from './Text';
 import theme from '../theme';
 
@@ -10,9 +11,11 @@ const formatCount = (count) => {
   return count.toString();
 };
 
-const RepositoryItem = ({ repository }) => {
+const RepositoryItem = ({ repository, showGitHubButton = false }) => {
+  const openGitHub = () => Linking.openURL(repository.url);
+
   return (
-    <View style={styles.container}>
+    <View testID="repositoryItem" style={styles.container}>
       <View style={styles.repositoryInfo}>
         <Image
           source={{ uri: repository.ownerAvatarUrl }}
@@ -43,6 +46,12 @@ const RepositoryItem = ({ repository }) => {
           <Text style={styles.statLabel}>Rating</Text>
         </View>
       </View>
+
+      {showGitHubButton && (
+        <Pressable style={styles.githubButton} onPress={openGitHub}>
+          <Text style={styles.githubButtonText}>Open in GitHub</Text>
+        </Pressable>
+      )}
     </View>
   );
 };
@@ -104,6 +113,17 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#57606a',
     marginTop: 4,
+  },
+  githubButton: {
+    alignItems: 'center',
+    backgroundColor: theme.colors.primary,
+    borderRadius: 5,
+    marginTop: 16,
+    padding: 12,
+  },
+  githubButtonText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
   },
 });
 
