@@ -9,6 +9,7 @@ const Repository = () => {
   const { id } = useParams();
   const { data, loading } = useQuery(REPOSITORY, {
     variables: { id },
+    fetchPolicy: 'cache-and-network',
   });
 
   if (loading || !data?.repository) {
@@ -16,7 +17,7 @@ const Repository = () => {
   }
 
   const { repository } = data;
-  const reviews = repository.reviews.edges.map((edge) => edge.node);
+  const reviews = repository.reviews?.edges.map((edge) => edge.node) ?? [];
 
   return (
     <FlatList

@@ -46,8 +46,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: theme.colors.primary,
   },
-  rating: {
-    color: '#ffffff',
+  rating: {  
+    color: '#ffffff', 
     fontSize: 16,
     fontWeight: 'bold',
   },

@@ -3,6 +3,7 @@ import AppBar from './AppBar';
 import RepositoryList from './RepositoryList';
 import SignIn from './SignIn';
 import Repository from './Repository';
+import ReviewForm from './ReviewForm';
 import { Navigate, Route, Routes, useNavigate } from 'react-router-native';
 
 const Main = () => {
@@ -22,6 +23,7 @@ const Main = () => {
         />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/repositories/:id" element={<Repository />} />
+        <Route path="/review" element={<ReviewForm />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </View>
