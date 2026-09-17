@@ -1,8 +1,18 @@
 import { gql } from '@apollo/client';
 
 export const REPOSITORIES = gql`
-  query {
-    repositories {
+  query Repositories(
+    $first: Int
+    $after: String
+    $orderBy: AllRepositoriesOrderBy
+    $orderDirection: OrderDirection
+  ) {
+    repositories(
+      first: $first
+      after: $after
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
       edges {
         node {
           id
@@ -15,6 +25,11 @@ export const REPOSITORIES = gql`
           reviewCount
           ownerAvatarUrl
         }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+        startCursor
       }
     }
   }

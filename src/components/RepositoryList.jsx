@@ -1,58 +1,71 @@
+import { useState } from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 import RepositoryItem from './RepositoryItem';
+import Text from './Text';
+import useRepositories from '../hooks/useRepositories';
 
-const repositories = [
+const sortOptions = [
   {
-    id: 'jaredpalmer.formik',
-    fullName: 'jaredpalmer/formik',
-    description: 'Build forms in React, without the tears',
-    language: 'TypeScript',
-    forksCount: 1589,
-    stargazersCount: 21553,
-    ratingAverage: 88,
-    reviewCount: 4,
-    ownerAvatarUrl: 'https://avatars2.githubusercontent.com/u/4060187?v=4',
+    label: 'Latest repositories',
+    orderBy: 'CREATED_AT',
+    orderDirection: 'DESC',
   },
   {
-    id: 'rails.rails',
-    fullName: 'rails/rails',
-    description: 'Ruby on Rails',
-    language: 'Ruby',
-    forksCount: 18349,
-    stargazersCount: 45377,
-    ratingAverage: 100,
-    reviewCount: 2,
-    ownerAvatarUrl: 'https://avatars1.githubusercontent.com/u/4223?v=4',
+    label: 'Highest rated repositories',
+    orderBy: 'RATING_AVERAGE',
+    orderDirection: 'DESC',
   },
   {
-    id: 'django.django',
-    fullName: 'django/django',
-    description: 'The Web framework for perfectionists with deadlines.',
-    language: 'Python',
-    forksCount: 21015,
-    stargazersCount: 48496,
-    ratingAverage: 73,
-    reviewCount: 5,
-    ownerAvatarUrl: 'https://avatars2.githubusercontent.com/u/27804?v=4',
-  },
-  {
-    id: 'reduxjs.redux',
-    fullName: 'reduxjs/redux',
-    description: 'Predictable state container for JavaScript apps',
-    language: 'TypeScript',
-    forksCount: 13902,
-    stargazersCount: 52869,
-    ratingAverage: 0,
-    reviewCount: 0,
-    ownerAvatarUrl: 'https://avatars3.githubusercontent.com/u/13142323?v=4',
+    label: 'Lowest rated repositories',
+    orderBy: 'RATING_AVERAGE',
+    orderDirection: 'ASC',
   },
 ];
 
-export const RepositoryListContainer = ({ repositories, onRepositoryPress }) => {
+export const RepositoryListContainer = ({
+  repositories,
+  onRepositoryPress,
+  onSortChange,
+  onEndReached,
+  selectedSort = sortOptions[0],
+}) => {
+  const selectSort = (sort) => {
+    onSortChange?.(sort);
+  };
+
   const renderItem = ({ item }) => (
     <Pressable onPress={() => onRepositoryPress?.(item.node.id)}>
       <RepositoryItem repository={item.node} />
     </Pressable>
+  );
+
+  const renderHeader = () => (
+    <View style={styles.sortingContainer}>
+      <Text style={styles.sortingLabel}>Sort repositories</Text>
+      <View style={styles.optionsContainer}>
+        {sortOptions.map((sort) => (
+          <Pressable
+            key={`${sort.orderBy}-${sort.orderDirection}`}
+            accessibilityRole="button"
+            accessibilityState={{ selected: selectedSort === sort }}
+            onPress={() => selectSort(sort)}
+            style={[
+              styles.option,
+              selectedSort === sort && styles.selectedOption,
+            ]}
+          >
+            <Text
+              style={[
+                styles.optionText,
+                selectedSort === sort && styles.selectedOptionText,
+              ]}
+            >
+              {sort.label}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+    </View>
   );
 
   return (
@@ -60,20 +73,42 @@ export const RepositoryListContainer = ({ repositories, onRepositoryPress }) => 
       data={repositories.edges}
       renderItem={renderItem}
       keyExtractor={(item) => item.node.id}
+      ListHeaderComponent={renderHeader}
+      onEndReached={onEndReached}
+      onEndReachedThreshold={0.5}
       ItemSeparatorComponent={() => <View style={styles.separator} />}
     />
   );
 };
 
 const RepositoryList = ({ onRepositoryPress }) => {
-  const repositoryData = {
-    edges: repositories.map((repository) => ({ node: repository })),
+  const [sort, setSort] = useState(sortOptions[0]);
+  const { repositories, loading, fetchMore } = useRepositories(
+    sort.orderBy,
+    sort.orderDirection,
+  );
+
+  const loadMore = () => {
+    if (loading || !repositories.pageInfo?.hasNextPage) {
+      return;
+    }
+
+    fetchMore({
+      variables: {
+        after: repositories.pageInfo.endCursor,
+        orderBy: sort.orderBy,
+        orderDirection: sort.orderDirection,
+      },
+    });
   };
 
   return (
     <RepositoryListContainer
-      repositories={repositoryData}
+      repositories={repositories}
       onRepositoryPress={onRepositoryPress}
+      onSortChange={setSort}
+      onEndReached={loadMore}
+      selectedSort={sort}
     />
   );
 };
@@ -82,6 +117,33 @@ const styles = StyleSheet.create({
   separator: {
     height: 10,
     backgroundColor: '#e1e4e8',
+  },
+  sortingContainer: {
+    padding: 12,
+    backgroundColor: '#ffffff',
+  },
+  sortingLabel: {
+    marginBottom: 8,
+    fontWeight: 'bold',
+  },
+  optionsContainer: {
+    gap: 8,
+  },
+  option: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#d0d7de',
+    borderRadius: 4,
+  },
+  selectedOption: {
+    backgroundColor: '#0366d6',
+    borderColor: '#0366d6',
+  },
+  optionText: {
+    color: '#24292f',
+  },
+  selectedOptionText: {
+    color: '#ffffff',
   },
 });
 
