@@ -1,5 +1,12 @@
 import { useState } from 'react';
-import { FlatList, Pressable, StyleSheet, View } from 'react-native';
+import {
+  FlatList,
+  Pressable,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
+import { useDebounce } from 'use-debounce';
 import RepositoryItem from './RepositoryItem';
 import Text from './Text';
 import useRepositories from '../hooks/useRepositories';
@@ -28,6 +35,8 @@ export const RepositoryListContainer = ({
   onSortChange,
   onEndReached,
   selectedSort = sortOptions[0],
+  searchKeyword = '',
+  onSearchKeywordChange,
 }) => {
   const selectSort = (sort) => {
     onSortChange?.(sort);
@@ -41,6 +50,12 @@ export const RepositoryListContainer = ({
 
   const renderHeader = () => (
     <View style={styles.sortingContainer}>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search repositories"
+        value={searchKeyword}
+        onChangeText={onSearchKeywordChange}
+      />
       <Text style={styles.sortingLabel}>Sort repositories</Text>
       <View style={styles.optionsContainer}>
         {sortOptions.map((sort) => (
@@ -83,9 +98,12 @@ export const RepositoryListContainer = ({
 
 const RepositoryList = ({ onRepositoryPress }) => {
   const [sort, setSort] = useState(sortOptions[0]);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [debouncedSearchKeyword] = useDebounce(searchKeyword, 500);
   const { repositories, loading, fetchMore } = useRepositories(
     sort.orderBy,
     sort.orderDirection,
+    debouncedSearchKeyword,
   );
 
   const loadMore = () => {
@@ -98,6 +116,7 @@ const RepositoryList = ({ onRepositoryPress }) => {
         after: repositories.pageInfo.endCursor,
         orderBy: sort.orderBy,
         orderDirection: sort.orderDirection,
+        searchKeyword: debouncedSearchKeyword,
       },
     });
   };
@@ -109,6 +128,8 @@ const RepositoryList = ({ onRepositoryPress }) => {
       onSortChange={setSort}
       onEndReached={loadMore}
       selectedSort={sort}
+      searchKeyword={searchKeyword}
+      onSearchKeywordChange={setSearchKeyword}
     />
   );
 };
@@ -125,6 +146,13 @@ const styles = StyleSheet.create({
   sortingLabel: {
     marginBottom: 8,
     fontWeight: 'bold',
+  },
+  searchInput: {
+    marginBottom: 12,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#d0d7de',
+    borderRadius: 4,
   },
   optionsContainer: {
     gap: 8,

@@ -6,12 +6,14 @@ export const REPOSITORIES = gql`
     $after: String
     $orderBy: AllRepositoriesOrderBy
     $orderDirection: OrderDirection
+    $searchKeyword: String
   ) {
     repositories(
       first: $first
       after: $after
       orderBy: $orderBy
       orderDirection: $orderDirection
+      searchKeyword: $searchKeyword
     ) {
       edges {
         node {
