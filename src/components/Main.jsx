@@ -5,6 +5,7 @@ import SignIn from './SignIn';
 import Repository from './Repository';
 import ReviewForm from './ReviewForm';
 import SignUp from './SignUp';
+import MyReviews from './MyReviews';
 import { Navigate, Route, Routes, useNavigate } from 'react-router-native';
 
 const Main = () => {
@@ -26,6 +27,7 @@ const Main = () => {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/repositories/:id" element={<Repository />} />
         <Route path="/review" element={<ReviewForm />} />
+        <Route path="/my-reviews" element={<MyReviews />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </View>

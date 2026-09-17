@@ -7,10 +7,27 @@ import { REPOSITORY } from '../graphql/queries';
 
 const Repository = () => {
   const { id } = useParams();
-  const { data, loading } = useQuery(REPOSITORY, {
-    variables: { id },
+  const { data, loading, fetchMore } = useQuery(REPOSITORY, {
+    variables: { id, first: 5, after: null },
     fetchPolicy: 'cache-and-network',
   });
+
+  const handleFetchMore = () => {
+    const canFetchMore =
+      !loading && data?.repository?.reviews?.pageInfo?.hasNextPage;
+
+    if (!canFetchMore) {
+      return;
+    }
+
+    fetchMore({
+      variables: {
+        id,
+        first: 5,
+        after: data.repository.reviews.pageInfo.endCursor,
+      },
+    });
+  };
 
   if (loading || !data?.repository) {
     return null;
@@ -24,6 +41,8 @@ const Repository = () => {
       data={reviews}
       renderItem={({ item }) => <ReviewItem review={item} />}
       keyExtractor={({ id }) => id}
+      onEndReached={handleFetchMore}
+      onEndReachedThreshold={0.5}
       ListHeaderComponent={() => (
         <RepositoryItem repository={repository} showGitHubButton />
       )}

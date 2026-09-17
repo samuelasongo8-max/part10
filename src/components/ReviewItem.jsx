@@ -12,7 +12,7 @@ const formatDate = (createdAt) => {
   return Number.isNaN(date.getTime()) ? '' : format(date, 'dd MMM yyyy');
 };
 
-const ReviewItem = ({ review }) => {
+const ReviewItem = ({ review, showRepository = false }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -20,7 +20,9 @@ const ReviewItem = ({ review }) => {
           <Text style={styles.rating}>{review.rating}</Text>
         </View>
         <View style={styles.reviewerInfo}>
-          <Text style={styles.username}>{review.user.username}</Text>
+          <Text style={styles.username}>
+            {showRepository ? review.repository.fullName : review.user.username}
+          </Text>
           <Text style={styles.date}>{formatDate(review.createdAt)}</Text>
         </View>
       </View>
