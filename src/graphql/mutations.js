@@ -16,6 +16,12 @@ export const CREATE_REVIEW = gql`
   }
 `;
 
+export const DELETE_REVIEW = gql`
+  mutation DeleteReview($deleteReviewId: ID!) {
+    deleteReview(id: $deleteReviewId)
+  }
+`;
+
 export const CREATE_USER = gql`
   mutation CreateUser($username: String!, $password: String!) {
     createUser(username: $username, password: $password) {
