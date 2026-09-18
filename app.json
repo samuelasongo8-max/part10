@@ -19,6 +19,16 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "cb2eddb6-e021-4c34-99eb-2d6763a37773"
+      }
+    },
+    "owner": "asongo-samuel",
+    "runtimeVersion": "exposdk:57.0.0",
+    "updates": {
+      "url": "https://u.expo.dev/cb2eddb6-e021-4c34-99eb-2d6763a37773"
     }
   }
 }
